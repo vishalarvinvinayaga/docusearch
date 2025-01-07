@@ -14,9 +14,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+from django.contrib import admin #type:ignore
+from django.urls import path #type:ignore
+from pdfbot import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('upload/', views.upload_file, name='upload_file'),
+    path('query/', views.query_embedding, name='query_embedding'),
 ]
