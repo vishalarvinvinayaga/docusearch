@@ -1,0 +1,62 @@
+/* Spinner Styles */
+.loader {
+    border: 5px solid rgba(243, 243, 243, 0.8); /* Semi-transparent outer border */
+    border-top: 5px solid #3498db; /* Accent color */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* PDF Container Styling */
+.pdf-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #7a98a3;
+    height: 100%;
+    overflow: auto;
+}
+
+/* "No file uploaded" Text Styling */
+.no-file-text {
+    font-size: 18px;
+    color: white;
+    text-align: center;
+}
+
+/* Upload Button Styling */
+.upload-button-container {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #7a98a3;
+    border-top: 1px solid #ccc;
+}
+
+.upload-button {
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upload-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}

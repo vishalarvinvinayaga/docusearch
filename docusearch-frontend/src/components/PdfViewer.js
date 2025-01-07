@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PDFDisplay from './PDFDisplay';
 import UploadButton from './UploadButton';
-import Chatbot from './Chatbot'; // Import Chatbot Component
+import Chatbot from './Chatbot';
 import { pdfjs } from 'react-pdf';
 
 // Configure the worker
@@ -9,7 +9,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
 
 const PdfViewer = () => {
     const [file, setFile] = useState(null);
-    const [numPages, setNumPages] = useState(null);
 
     const handleFileChange = (e) => {
         const uploadedFile = e.target.files[0];
@@ -23,7 +22,9 @@ const PdfViewer = () => {
             {/* Left Column */}
             <div className="w-1/2 bg-[#7a98a3] flex flex-col">
                 {/* PDF Viewer */}
-                <PDFDisplay file={file} numPages={numPages} setNumPages={setNumPages} />
+                <div className="flex-grow overflow-hidden">
+                    <PDFDisplay file={file} />
+                </div>
 
                 {/* Upload Button */}
                 <UploadButton onFileChange={handleFileChange} />

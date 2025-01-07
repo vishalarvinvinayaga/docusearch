@@ -4,15 +4,45 @@ const Chatbot = () => {
     const [messages, setMessages] = useState([]);
     const [query, setQuery] = useState('');
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (query.trim() === '') return;
 
         // Add the user's query to the messages list
         const newMessages = [...messages, { text: query, sender: 'user' }];
+        console.log('Sending query:', query);
 
-        // Add a mock response after the user's query
-        const response = { text: 'This is a response from the chatbot.', sender: 'bot' };
-        newMessages.push(response);
+        try {
+            console.log('Sending query:', query);
+            // Send the query to the backend
+            const response = await fetch('http://127.0.0.1:8000/query/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query }),
+            });
+
+            const data = await response.json();
+
+            // Add the backend's response to the messages list
+            if (response.ok && data.response) {
+                newMessages.push({
+                    text: `Retrieved chunk: ${data.response}`, // Displaying only the first chunk
+                    sender: 'bot',
+                });
+            } else {
+                newMessages.push({
+                    text: 'Sorry, something went wrong.',
+                    sender: 'bot',
+                });
+            }
+        } catch (error) {
+            console.error('Error sending query:', error);
+            newMessages.push({
+                text: 'Sorry, something went wrong.',
+                sender: 'bot',
+            });
+        }
 
         setMessages(newMessages);
         setQuery('');
