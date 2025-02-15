@@ -1,7 +1,7 @@
 /* Spinner Styles */
 .loader {
-    border: 5px solid rgba(243, 243, 243, 0.8); /* Semi-transparent outer border */
-    border-top: 5px solid #3498db; /* Accent color */
+    border: 5px solid rgba(243, 243, 243, 0.8);
+    border-top: 5px solid #3498db;
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -17,25 +17,19 @@
     }
 }
 
-/* PDF Container Styling */
-.pdf-container {
-    flex-grow: 1;
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #7a98a3;
-    height: 100%;
-    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 1000; /* Ensure it overlays all content */
 }
 
-/* "No file uploaded" Text Styling */
-.no-file-text {
-    font-size: 18px;
-    color: white;
-    text-align: center;
-}
-
-/* Upload Button Styling */
 .upload-button-container {
     height: 70px;
     display: flex;

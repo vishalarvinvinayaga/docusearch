@@ -98,3 +98,30 @@ def generate_response_with_langchain(query: str, context: str) -> str:
     except Exception as e:
         logger.error(f"Error generating response with LangChain: {e}")
         raise RuntimeError("Failed to generate response with LangChain.")
+
+
+# def generate_response_with_langchain(query: str, context: str):
+#     try:
+#         # Initialize the language model
+#         llm = ChatOpenAI(
+#             model="gpt-3.5-turbo",
+#             streaming=True,  # Enable streaming
+#             temperature=0.7,
+#             max_tokens=300
+#         )
+
+#         # Create a prompt template
+#         prompt = PromptTemplate(
+#             input_variables=["context", "query"],
+#             template="Use the following context to answer the query:\n\nContext:\n{context}\n\nQuery: {query}\n\nAnswer:",
+#         )
+
+#         # Generate the response stream
+#         formatted_prompt = prompt.format(context=context, query=query)
+#         response_stream = llm.predict(formatted_prompt)
+
+#         for chunk in response_stream:  # Process the response stream
+#             yield chunk.text  # Send each chunk of text as it arrives
+#     except Exception as e:
+#         logger.error(f"Error generating response with LangChain: {e}")
+#         raise RuntimeError("Failed to generate response with LangChain.")

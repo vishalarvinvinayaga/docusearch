@@ -1,81 +1,112 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from "react";
+import "./Chatbot.css";
 
-const Chatbot = () => {
+const Chatbot = ({ setHighlightedChunk }) => {
     const [messages, setMessages] = useState([]);
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState("");
+    const [loading, setLoading] = useState(false); // State to track if bot is "typing"
+    const chatContainerRef = useRef(null); // Reference for chat container
 
     const handleSend = async () => {
-        if (query.trim() === '') return;
+        if (query.trim() === "") return;
 
-        // Add the user's query to the messages list
-        const newMessages = [...messages, { text: query, sender: 'user' }];
-        console.log('Sending query:', query);
+        // Add user's query to messages
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: query, sender: "user" },
+        ]);
+        setQuery("");
+        setLoading(true); // Set loading state to true
 
         try {
-            console.log('Sending query:', query);
-            // Send the query to the backend
-            const response = await fetch('http://127.0.0.1:8000/query/', {
-                method: 'POST',
+            const response = await fetch("http://127.0.0.1:8000/query/", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ query }),
             });
 
+            if (!response.ok) {
+                throw new Error("Failed to fetch response from server.");
+            }
+
             const data = await response.json();
 
-            // Add the backend's response to the messages list
-            if (response.ok && data.response) {
-                newMessages.push({
-                    text: `Retrieved chunk: ${data.response}`, // Displaying only the first chunk
-                    sender: 'bot',
-                });
-            } else {
-                newMessages.push({
-                    text: 'Sorry, something went wrong.',
-                    sender: 'bot',
-                });
-            }
-        } catch (error) {
-            console.error('Error sending query:', error);
-            newMessages.push({
-                text: 'Sorry, something went wrong.',
-                sender: 'bot',
-            });
-        }
+            // Update messages with the bot's response
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { text: data.response, sender: "bot" },
+            ]);
 
-        setMessages(newMessages);
-        setQuery('');
+            // Pass the similar chunk to the parent (PDFDisplay)
+            console.log("Similar chunk received from backend:", data.response);
+            setHighlightedChunk(data.response);
+        } catch (error) {
+            console.error("Error fetching response:", error);
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { text: "Sorry, something went wrong.", sender: "bot" },
+            ]);
+        } finally {
+            setLoading(false); // Reset loading state
+        }
     };
 
     const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
             handleSend();
         }
     };
 
+    // Function to scroll to the latest message
+    const scrollToBottom = () => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop =
+                chatContainerRef.current.scrollHeight;
+        }
+    };
+
+    // Trigger scroll whenever messages are updated
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
     return (
         <div className="w-full h-full bg-[#001212] p-4 flex flex-col">
             {/* Chat Messages Section */}
-            <div className="flex-grow overflow-y-auto mb-4 p-4">
+            <div
+                ref={chatContainerRef}
+                className="flex-grow overflow-y-auto mb-4 p-4"
+            >
                 {messages.map((message, index) => (
                     <div
                         key={index}
                         className={`flex mb-2 ${
-                            message.sender === 'user' ? 'justify-end' : 'justify-start'
+                            message.sender === "user" ? "justify-end" : "justify-start"
                         }`}
                     >
                         <div
                             className={`p-2 rounded-md max-w-xs ${
-                                message.sender === 'user'
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-700 text-white'
+                                message.sender === "user"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-700 text-white"
                             }`}
                         >
                             {message.text}
                         </div>
                     </div>
                 ))}
+                {loading && (
+                    <div className="flex justify-start">
+                        <div className="p-2 rounded-md max-w-xs bg-gray-700 text-white">
+                            <div className="flex items-center">
+                                <span>Typing</span>
+                                <span className="dot-flashing"></span>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Chat Input Section */}

@@ -1,0 +1,22 @@
+/* Chatbot.css */
+
+/* Typing dots animation */
+.dot-flashing {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: white;
+    animation: dot-flashing 1s infinite linear;
+    margin-left: 2px;
+}
+
+@keyframes dot-flashing {
+    0% {
+        box-shadow: 8px 0 0 -5px white, 16px 0 0 -5px white;
+    }
+    50%,
+    100% {
+        box-shadow: 8px 0 0 0px white, 16px 0 0 -5px white;
+    }
+}

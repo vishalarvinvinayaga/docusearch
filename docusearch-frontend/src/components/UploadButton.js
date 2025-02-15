@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import "./UploadButton.css";
 
 const UploadButton = ({ onFileChange }) => {
+    const [loading, setLoading] = useState(false); // Manage loading state
+
     const handleFileUpload = async (e) => {
         const uploadedFile = e.target.files[0]; // Get the uploaded file
 
         if (uploadedFile) {
+            setLoading(true); // Start loading
             const formData = new FormData(); // Create form data
             formData.append("file", uploadedFile);
 
@@ -24,6 +27,8 @@ const UploadButton = ({ onFileChange }) => {
                 }
             } catch (error) {
                 console.error("Error uploading file:", error);
+            } finally {
+                setLoading(false); // Stop loading after backend processing
             }
         }
 
@@ -35,6 +40,12 @@ const UploadButton = ({ onFileChange }) => {
 
     return (
         <div className="upload-button-container">
+            {/* Spinner */}
+            {loading && (
+                <div className="loader-container">
+                    <div className="loader"></div>
+                </div>
+            )}
             <label htmlFor="file-upload" className="upload-button">
                 UPLOAD
             </label>
@@ -43,6 +54,7 @@ const UploadButton = ({ onFileChange }) => {
                 type="file"
                 className="hidden"
                 onChange={handleFileUpload}
+                disabled={loading} // Disable upload during loading
             />
         </div>
     );

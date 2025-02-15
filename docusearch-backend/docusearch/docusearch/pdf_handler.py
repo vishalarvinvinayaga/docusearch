@@ -8,6 +8,8 @@ import weaviate #type:ignore
 from langchain_weaviate.vectorstores import WeaviateVectorStore  # type: ignore
 from PyPDF2 import PdfReader # type: ignore
 from langchain.text_splitter import RecursiveCharacterTextSplitter # type: ignore
+import re
+
 
 load_dotenv()
 
@@ -35,7 +37,7 @@ def extract_text_from_pdf(file):
     text = ""
     for page in reader.pages:
         text += page.extract_text() or ""  # Use `or ""` to handle cases where text extraction fails
-    logger.info(f"extracted texts {text}")
+
     
     return text
 
@@ -45,3 +47,22 @@ def chunk_text(text, chunk_size=1000, overlap=200):
     chunks = splitter.split_text(text)
     #logger.info(f" chunks {chunks}")
     return chunks
+
+
+def normalize_text(text: str) -> str:
+    """
+    Normalizes the given text by removing all special characters
+    except for commas and periods.
+
+    Args:
+        text (str): The text to normalize.
+
+    Returns:
+        str: The normalized text.
+    """
+    # Remove all characters except alphanumerics, spaces, commas, and periods
+    normalized_text = re.sub(r"[^a-zA-Z0-9,.\s]", "", text)
+    # Replace multiple spaces with a single space
+    normalized_text = re.sub(r"\s+", " ", normalized_text)
+    # Strip leading and trailing spaces
+    return normalized_text.strip()
